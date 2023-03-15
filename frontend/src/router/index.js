@@ -1,22 +1,33 @@
 import { createRouter, createWebHistory } from "vue-router";
-import IndexView from "../views/IndexView.vue";
+import IndexPage from "../views/IndexView.vue";
+const AuthPage = () => import("@/views/AuthView.vue");
+import { useAuthStore } from "@/stores/AuthStore.js";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
-      name: "home",
-      component: IndexView,
+      name: "IndexPage",
+      component: IndexPage,
+      beforeEnter: (to, from, next) => {
+        const authStore = useAuthStore();
+        if (!authStore.logIn)
+          next({ name: "AuthPage", params: { id: "signin" } });
+        else next();
+      },
     },
-    // {
-    //   path: '/about',
-    //   name: 'about',
-    //   // route level code-splitting
-    //   // this generates a separate chunk (About.[hash].js) for this route
-    //   // which is lazy-loaded when the route is visited.
-    //   component: () => import('../views/AboutView.vue')
-    // }
+    {
+      path: "/:id",
+      name: "AuthPage",
+      component: AuthPage,
+      props: (route) => ({ id: route.params.id }),
+      beforeEnter: (to, from, next) => {
+        const authStore = useAuthStore();
+        if (authStore.logIn) next({ name: "IndexPage" });
+        else next();
+      },
+    },
   ],
 });
 

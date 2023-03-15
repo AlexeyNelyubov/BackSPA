@@ -1,26 +1,33 @@
 <script setup>
 import { ref } from "vue";
+import { useAuthStore } from "@/stores/AuthStore.js";
+const authStore = useAuthStore();
+
 const title = ref("");
 const load = ref();
 const reps = ref();
 
 const addworkout = async () => {
+  if (!authStore.logIn) {
+    console.log("error: you should be authorized");
+    return;
+  }
   const workout = {
     title: title.value,
     load: load.value,
     reps: reps.value,
   };
-  const response = await fetch("/api", {
+  const response = await fetch("/api/workouts", {
     method: "POST",
     body: JSON.stringify(workout),
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${authStore.user.token}`,
     },
   });
   const json = await response.json();
 
   if (response.ok) {
-    console.log("new workout added:", json);
     title.value = "";
     load.value = "";
     reps.value = "";

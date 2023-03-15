@@ -2,10 +2,21 @@
 import { ref } from "vue";
 import TheWorkout from "./TheWorkout.vue";
 import AddWorkout from "./AddWorkout.vue";
+import { useAuthStore } from "@/stores/AuthStore.js";
+const authStore = useAuthStore();
 
 const workouts = ref();
 const getWorkout = async () => {
-  const response = await fetch("/api");
+  if (!authStore.logIn) {
+    console.log("error: you should be authorized");
+    return;
+  }
+  const response = await fetch("/api/workouts", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${authStore.user.token}`,
+    },
+  });
   const json = await response.json();
   if (response.ok) {
     workouts.value = json;
@@ -15,21 +26,16 @@ const getWorkout = async () => {
 };
 
 getWorkout();
-
-function fn() {
-  getWorkout();
-}
 </script>
 
 <template>
   <div class="wrapper-feed">
     <div class="show-workout">
-      FEED
       <div v-for="workout in workouts" :key="workout.id" class="workout">
-        <the-workout :workout="workout" @deleteworkout="fn" />
+        <the-workout :workout="workout" @deleteworkout="getWorkout" />
       </div>
     </div>
-    <add-workout @addnewworkout="fn" />
+    <add-workout @addnewworkout="getWorkout" />
   </div>
 </template>
 
@@ -39,7 +45,6 @@ function fn() {
   justify-content: space-between;
   padding: 30px;
   font-size: 20px;
-  background-color: #f1f1f1;
 }
 
 .show-workout {

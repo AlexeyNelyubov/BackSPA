@@ -1,11 +1,22 @@
 <script setup>
+import { useAuthStore } from "@/stores/AuthStore.js";
+const authStore = useAuthStore();
+
 const props = defineProps({
   workout: Object,
 });
+const emit = defineEmits(["deleteworkout"]);
 
 const deleteWorkout = async () => {
-  const response = await fetch("/api" + props.workout._id, {
+  if (!authStore.logIn) {
+    console.log("error: you should be authorized");
+    return;
+  }
+  const response = await fetch(`/api/workouts/${props.workout._id}`, {
     method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${authStore.user.token}`,
+    },
   });
 
   const json = await response.json();
@@ -15,8 +26,6 @@ const deleteWorkout = async () => {
     emit("deleteworkout");
   }
 };
-
-const emit = defineEmits(["deleteworkout"]);
 </script>
 
 <template>
@@ -44,7 +53,7 @@ const emit = defineEmits(["deleteworkout"]);
   font-weight: bold;
   font-style: italic;
   font-size: 25px;
-  color: rgb(84, 145, 105);
+  color: #549169;
 }
 
 span {

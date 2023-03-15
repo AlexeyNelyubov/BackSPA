@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const workoutRoutes = require('./routes/workouts');
+const userRoutes = require('./routes/user');
 mongoose.set('strictQuery', false);
 
 //express app
@@ -19,12 +20,8 @@ next();
 //routes
 app.use('/api/workouts', workoutRoutes);
 
-// app.get('/', (req, res) => {
-//     const pet = {"dsfdsf": "dfghdfh",
-//     "dsfdsf": "dfghdfh"
-//     };
-//     res.json(pet);
-// })
+app.use('/api/user', userRoutes);
+
 
 //connect to DB
 mongoose.connect(process.env.MONGO_URI)
