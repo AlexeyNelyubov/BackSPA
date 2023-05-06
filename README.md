@@ -1,9 +1,6 @@
-# frontend for FullstackSPAWorkoutList
+# FullstackSPAWorkoutList
 
-The app functional:
-jwt authentication
-user can create and delete workout with current date
-the database stores all workouts and users
+The app functional:jwt authentication; user can create and delete workout with current date; the database stores all workouts and users
 
 ## Project Setup for frontend and backend
 
