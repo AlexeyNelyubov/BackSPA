@@ -1,6 +1,6 @@
-# frontend for FullstackSPAWorkoutList
+# backend for FullstackSPAWorkoutList
 
-Stack: JavaScript, Vue3(Composition API), Pinia, VueRouter
+Stack: Node.js(Express), MongoDB(Mongoose)
 
 ## Project Setup
 
